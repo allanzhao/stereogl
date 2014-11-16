@@ -1,9 +1,9 @@
 package com.bitwiseops.lwjglutils;
 
 public interface Renderer {
-	public void init();
+    public void init();
 
-	public void render();
+    public void render();
 
-	public void destroy();
+    public void destroy();
 }

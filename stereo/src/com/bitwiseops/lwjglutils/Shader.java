@@ -7,59 +7,59 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 public class Shader {
-	private final Type type;
-	private int id = 0;
+    private final Type type;
+    private int id = 0;
 
-	public Shader(Type type) {
-		this.type = type;
-	}
+    public Shader(Type type) {
+        this.type = type;
+    }
 
-	public void create(String source) {
-		try {
-			id = ARBShaderObjects.glCreateShaderObjectARB(type.glShaderType);
+    public void create(String source) {
+        try {
+            id = ARBShaderObjects.glCreateShaderObjectARB(type.glShaderType);
 
-			if(id == 0) {
-				throw new RuntimeException(
-						"Created shader object has an id of 0");
-			}
+            if(id == 0) {
+                throw new RuntimeException(
+                        "Created shader object has an id of 0");
+            }
 
-			ARBShaderObjects.glShaderSourceARB(id, source);
-			ARBShaderObjects.glCompileShaderARB(id);
+            ARBShaderObjects.glShaderSourceARB(id, source);
+            ARBShaderObjects.glCompileShaderARB(id);
 
-			if(ARBShaderObjects.glGetObjectParameteriARB(id,
-					ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {
-				throw new RuntimeException("Error compiling shader: "
-						+ GlUtils.getLogString(id));
-			}
-		} catch(Exception e) {
-			destroy();
-			throw e;
-		}
-	}
-	
-	public void destroy() {
-		if(id != 0) {
-			ARBShaderObjects.glDeleteObjectARB(id);
-			id = 0;
-		}
-	}
+            if(ARBShaderObjects.glGetObjectParameteriARB(id,
+                    ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {
+                throw new RuntimeException("Error compiling shader: "
+                        + GlUtils.getLogString(id));
+            }
+        } catch(Exception e) {
+            destroy();
+            throw e;
+        }
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public void destroy() {
+        if(id != 0) {
+            ARBShaderObjects.glDeleteObjectARB(id);
+            id = 0;
+        }
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public static enum Type {
-		VERTEX(ARBVertexShader.GL_VERTEX_SHADER_ARB), FRAGMENT(
-				ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
+    public int getId() {
+        return id;
+    }
 
-		public final int glShaderType;
+    public static enum Type {
+        VERTEX(ARBVertexShader.GL_VERTEX_SHADER_ARB), FRAGMENT(
+                ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
 
-		private Type(int glShaderType) {
-			this.glShaderType = glShaderType;
-		}
-	}
+        public final int glShaderType;
+
+        private Type(int glShaderType) {
+            this.glShaderType = glShaderType;
+        }
+    }
 }

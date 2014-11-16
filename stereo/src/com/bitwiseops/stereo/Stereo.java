@@ -69,8 +69,7 @@ public class Stereo {
             Display.setDisplayMode(new DisplayMode(1024, 512));
             Display.setVSyncEnabled(true);
             Display.setResizable(true);
-            PixelFormat pixelFormat = new PixelFormat().withDepthBits(8)
-                    .withStencilBits(8);
+            PixelFormat pixelFormat = new PixelFormat().withDepthBits(8).withStencilBits(8);
             Display.create(pixelFormat);
         } catch(LWJGLException e) {
             logger.error("Could not initialize display.", e);
@@ -84,14 +83,8 @@ public class Stereo {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         // Configure stencil test
-        GL11.glStencilFunc(GL11.GL_EQUAL, 0, -1);// Pixels pass only if the
-                                                 // stencil value is still zero
-        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_INCR);// If a pixel
-                                                                   // is drawn,
-                                                                   // make the
-                                                                   // stencil
-                                                                   // value
-                                                                   // nonzero
+        GL11.glStencilFunc(GL11.GL_EQUAL, 0, -1);// Pixels pass only if the stencil value is still zero
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_INCR);// If a pixel is drawn, make the stencil value nonzero
 
         // Configure back face culling
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -110,22 +103,16 @@ public class Stereo {
         propColorShaderProgram = new ShaderProgram();
 
         try {
-            makeLinkVertexShader.create(Resources
-                    .getResourceAsString(MAKE_LINK_VERTEX_SHADER_SOURCE_PATH));
-            makeLinkFragmentShader
-                    .create(Resources
-                            .getResourceAsString(MAKE_LINK_FRAGMENT_SHADER_SOURCE_PATH));
+            makeLinkVertexShader.create(Resources.getResourceAsString(MAKE_LINK_VERTEX_SHADER_SOURCE_PATH));
+            makeLinkFragmentShader.create(Resources.getResourceAsString(MAKE_LINK_FRAGMENT_SHADER_SOURCE_PATH));
             makeLinkShaderProgram.create();
             makeLinkShaderProgram.attachShader(makeLinkVertexShader);
             makeLinkShaderProgram.attachShader(makeLinkFragmentShader);
             makeLinkShaderProgram.link();
             makeLinkShaderProgram.validate();
 
-            propColorVertexShader.create(Resources
-                    .getResourceAsString(PROP_COLOR_VERTEX_SHADER_SOURCE_PATH));
-            propColorFragmentShader
-                    .create(Resources
-                            .getResourceAsString(PROP_COLOR_FRAGMENT_SHADER_SOURCE_PATH));
+            propColorVertexShader.create(Resources.getResourceAsString(PROP_COLOR_VERTEX_SHADER_SOURCE_PATH));
+            propColorFragmentShader.create(Resources.getResourceAsString(PROP_COLOR_FRAGMENT_SHADER_SOURCE_PATH));
             propColorShaderProgram.create();
             propColorShaderProgram.attachShader(propColorVertexShader);
             propColorShaderProgram.attachShader(propColorFragmentShader);
@@ -146,17 +133,12 @@ public class Stereo {
          */
 
         backgroundTexture = new Texture2D();
-        backgroundTexture.createEmpty(ceilPowerOfTwo(maxPixelSep),
-                backgroundTextureHeight, GL11.GL_RGB, GL11.GL_RGB,
-                GL11.GL_UNSIGNED_BYTE);
+        backgroundTexture.createEmpty(ceilPowerOfTwo(maxPixelSep), backgroundTextureHeight, GL11.GL_RGB, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
         backgroundTexture.bind();
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
-                GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER,
-                GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         Texture2D.bindNone();
-        backgroundTextureData = new byte[backgroundTexture.getWidth()
-                * backgroundTexture.getHeight() * 3];
+        backgroundTextureData = new byte[backgroundTexture.getWidth() * backgroundTexture.getHeight() * 3];
 
         /*
          * Create depth framebuffer
@@ -187,8 +169,7 @@ public class Stereo {
         int displayHeight = Display.getHeight();
         float aspectRatio = (float) displayWidth / (float) displayHeight;
 
-        if(displayWidth != prevDisplayWidth
-                || displayHeight != prevDisplayHeight) {
+        if(displayWidth != prevDisplayWidth || displayHeight != prevDisplayHeight) {
             // Resize viewport
             GL11.glViewport(0, 0, displayWidth, displayHeight);
             screenTextureWidth = displayWidth;
@@ -220,58 +201,42 @@ public class Stereo {
         }
 
         /*
-         * if(depthTexture == null) { depthTexture = new Texture2D();
-         * depthTexture.createEmpty(displayWidth, displayHeight, GL11.GL_,
-         * pixelFormat, type);
-         * 
-         * 
-         * 
-         * 
-         * }
+        if(depthTexture == null) {
+            depthTexture = new Texture2D();
+            depthTexture.createEmpty(displayWidth, displayHeight, GL11.GL_, pixelFormat, type);
+        }
          */
         if(linkDistanceTexture == null) {
             linkDistanceTexture = new Texture2D();
-            linkDistanceTexture.createEmpty(displayWidth, displayHeight,
-                    GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
+            linkDistanceTexture.createEmpty(displayWidth, displayHeight, GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
             linkDistanceTexture.bind();
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         }
         if(linkDepthStencilBuffer == null) {
             linkDepthStencilBuffer = new Renderbuffer();
-            linkDepthStencilBuffer.create(displayWidth, displayHeight,
-                    ARBFramebufferObject.GL_DEPTH24_STENCIL8);
+            linkDepthStencilBuffer.create(displayWidth, displayHeight, ARBFramebufferObject.GL_DEPTH24_STENCIL8);
         }
         if(propColorTexture0 == null) {
             propColorTexture0 = new Texture2D();
-            propColorTexture0.createEmpty(displayWidth, displayHeight,
-                    GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
+            propColorTexture0.createEmpty(displayWidth, displayHeight, GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
             propColorTexture0.bind();
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         }
         if(propColorTexture1 == null) {
             propColorTexture1 = new Texture2D();
-            propColorTexture1.createEmpty(displayWidth, displayHeight,
-                    GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
+            propColorTexture1.createEmpty(displayWidth, displayHeight, GL11.GL_RGB8, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE);
             propColorTexture1.bind();
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-                    GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         }
 
         /*
          * Generate new random background texture
          */
         random.nextBytes(backgroundTextureData);
-        backgroundTexture.replacePixels(0, 0, backgroundTexture.getWidth(),
-                backgroundTexture.getHeight(), GL11.GL_RGB,
-                GL11.GL_UNSIGNED_BYTE, backgroundTextureData);
+        backgroundTexture.replacePixels(0, 0, backgroundTexture.getWidth(), backgroundTexture.getHeight(), GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, backgroundTextureData);
 
         /*
          * Create links
@@ -296,8 +261,7 @@ public class Stereo {
         // FIXME: begin test code
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glFrustum(-aspectRatio, aspectRatio, -1f, 1f, frustumNear,
-                frustumFar);
+        GL11.glFrustum(-aspectRatio, aspectRatio, -1f, 1f, frustumNear, frustumFar);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         /*
@@ -352,11 +316,8 @@ public class Stereo {
         // Draw depth slices
         for(int pixelSep = maxPixelSep; pixelSep >= minPixelSep; pixelSep--) {
             float separation = (float) pixelSep / screenDpi;
-            float depth = (separation * observerDistance)
-                    / (eyeSeparation - separation);
-            float z = -((frustumFar + frustumNear) * 0.5f
-                    / (frustumFar - frustumNear) + (-frustumFar * frustumNear)
-                    / ((frustumFar - frustumNear) * depth) + 0.5f);
+            float depth = (separation * observerDistance) / (eyeSeparation - separation);
+            float z = -((frustumFar + frustumNear) * 0.5f / (frustumFar - frustumNear) + (-frustumFar * frustumNear) / ((frustumFar - frustumNear) * depth) + 0.5f);
 
             makeLinkShaderProgram.setUniform("pixelSep", (float) pixelSep);
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
@@ -384,24 +345,18 @@ public class Stereo {
         backgroundTexture.bind();
         GL13.glActiveTexture(GL13.GL_TEXTURE2);
         linkDistanceTexture.bind();
-        propColorShaderProgram.setUniform("backgroundSize",
-                (float) backgroundTexture.getWidth(),
-                (float) backgroundTexture.getHeight());
-        propColorShaderProgram.setUniform("screenTextureSize",
-                (float) screenTextureWidth, (float) screenTextureHeight);
+        propColorShaderProgram.setUniform("backgroundSize", (float) backgroundTexture.getWidth(), (float) backgroundTexture.getHeight());
+        propColorShaderProgram.setUniform("screenTextureSize", (float) screenTextureWidth, (float) screenTextureHeight);
 
         int sourceTextureId = 0;
         int stripWidth = minPixelSep;
         for(int i = 0; i < (int) Math.ceil((float) displayWidth / stripWidth); i++) {
-            Texture2D targetTexture = (sourceTextureId == 0) ? propColorTexture1
-                    : propColorTexture0;
-            Texture2D sourceTexture = (sourceTextureId == 0) ? propColorTexture0
-                    : propColorTexture1;
+            Texture2D targetTexture = (sourceTextureId == 0) ? propColorTexture1 : propColorTexture0;
+            Texture2D sourceTexture = (sourceTextureId == 0) ? propColorTexture0 : propColorTexture1;
             propFramebuffer.bindColorTexture(targetTexture);
             GL13.glActiveTexture(GL13.GL_TEXTURE4);
             sourceTexture.bind();
-            propColorShaderProgram.setUniform("newStartX",
-                    (float) (i * stripWidth));
+            propColorShaderProgram.setUniform("newStartX", (float) (i * stripWidth));
 
             if(i < 2) {
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
@@ -432,8 +387,7 @@ public class Stereo {
         ShaderProgram.useNone();
 
         // Need to display the texture that was rendered to last
-        Texture2D finalTexture = (sourceTextureId == 0) ? propColorTexture0
-                : propColorTexture1;
+        Texture2D finalTexture = (sourceTextureId == 0) ? propColorTexture0 : propColorTexture1;
 
         /*
          * Display the final output
@@ -441,8 +395,7 @@ public class Stereo {
 
         Framebuffer.bindNone();
 
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT
-                | GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();

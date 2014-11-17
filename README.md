@@ -7,6 +7,9 @@ The result looks like TV static, but it can be viewed like a normal single image
 
 Currently a work in progress, so the source code is a bit messy.
 
+#### Screenshot
+![stereogl](https://cloud.githubusercontent.com/assets/6827109/5063925/73780ed0-6daf-11e4-9c70-4e8d3c7a5e80.png)
+
 #### Helpful references
   - http://www.techmind.org/stereo/stech.html - CPU implementation, has some enhancements that I want to implement later
   - http://http.developer.nvidia.com/GPUGems/gpugems_ch41.html - Starting point for the GPU implementation
